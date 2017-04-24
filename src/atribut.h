@@ -1,24 +1,21 @@
-
-#ifndef NODE_H
-#define NODE_H
-
+#ifndef ATRIBUT_H
+#define ATRIBUT_H
 #include <QGraphicsItem>
 #include <QList>
-#include <entity/vk/VkUser.h>
+#include <relation.h>
 
-class Edge;
+class relation;
 class GraphWidget;
-class VkUser;
 QT_BEGIN_NAMESPACE
 class QGraphicsSceneMouseEvent;
 QT_END_NAMESPACE
 
-class Node : public QGraphicsItem
+template <typename T>
+class atribut : public QGraphicsItem
 {
 public:
-    Node(VkUser *vkUser);
-    Node(GraphWidget *graphWidget);
-    void setGraphWidget(GraphWidget *graphWidget);
+    atribut(GraphWidget *graphWidget);
+
     void addEdge(Edge *edge);
     QList<Edge *> edges() const;
 
@@ -39,10 +36,9 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    VkUser *vkUser;
-    QList<Edge *> edgeList;
+    T value;
     QPointF newPos;
     GraphWidget *graph;
 };
 
-#endif // NODE_H
+#endif // ATRIBUT_H

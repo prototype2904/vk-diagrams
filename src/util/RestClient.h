@@ -1,6 +1,7 @@
 #ifndef REQUESTER_H
 #define REQUESTER_H
 #include <QObject>
+#include <QtNetwork>
 #include <QNetworkReply>
 #include <QDebug>
 #include <QEventLoop>

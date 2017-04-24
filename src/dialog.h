@@ -22,7 +22,14 @@ class Dialog : public QDialog
 
 public:
     Dialog();
-
+    void submitVkUser(QString idUser, QGroupBox *grid);
+    void selectFriend(QGroupBox *grid);
+    static void setNumCommonFriedns(int number){
+        Dialog::numCommonFriends->setText(QString::number(number));
+    }
+    static void setNumCommonGroups(int number){
+        Dialog::numCommonGroups->setText(QString::number(number));
+    }
 private slots:
     void submit();
 private:
@@ -37,6 +44,8 @@ private:
     QLineEdit *idInput;
     UserServiceFacade *userServiceFacade;
 
+    QLabel* fioLabel;
+    QLabel* idLabel;
     QMenuBar *menuBar;
     QGroupBox *horizontalGroupBox;
     QGroupBox *gridGroupBox;
@@ -50,5 +59,9 @@ private:
 
     QMenu *fileMenu;
     QAction *exitAction;
+
+    static QLabel* friendFio;
+    static QLabel* numCommonFriends;
+    static QLabel* numCommonGroups;
 };
 #endif

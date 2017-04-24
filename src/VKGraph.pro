@@ -13,9 +13,11 @@ SOURCES += main.cpp \
     util/JsonParser.cpp \
     util/RestClient.cpp \
     util/VkRequestBuilder.cpp \
-    node.cpp \
     dialog.cpp \
-    servise/userservicefacade.cpp
+    servise/userservicefacade.cpp \
+    node.cpp \
+    edge.cpp \
+    graphwidget.cpp
 
 
 
@@ -28,9 +30,12 @@ HEADERS += \
     util/JsonParser.h \
     util/RestClient.h \
     util/VkRequestBuilder.h \
-    node.h \
     dialog.h \
-    servise/userservicefacade.h
+    servise/userservicefacade.h \
+    node.h \
+    edge.h \
+    graphwidget.h \
+    er_diagram.h
 
 
 

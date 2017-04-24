@@ -29,7 +29,7 @@ QString VkRequestBuilder::strUserGet(int user_id, QString access_token)
 
 
     if( !(access_token.isEmpty()) ) {
-        strUrl+="&access_token"
+        strUrl+="&access_token="
                 +access_token;
     }
 

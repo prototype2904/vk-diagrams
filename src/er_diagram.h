@@ -3,13 +3,13 @@
 #include <string>
 #include <vector>
 template <typename T>
-class er
+class Er
 {
   private:
 
   struct relation{
                 std::string type;
-                er *other;
+                Er *other;
             };
   struct atribut{
                 std::string name;
@@ -20,7 +20,7 @@ class er
   int i_at;
   int i_re;
  public:
-  er()
+  Er()
   {
       i_at=0;
       i_re=0;
@@ -28,7 +28,7 @@ class er
       atributs=new std::vector<atribut>;
   }
 
-  ~er() {
+  ~Er() {
      if (relations)
         delete[] relations;
      if (atributs)
@@ -44,7 +44,7 @@ class er
     return 0;
   }
 
-  int insert_relatin(std::string type,er *other)
+  int insert_relation(std::string type,Er *other)
   {
     relations->push_back(relation());
     relations->at(i_re).type=type;
@@ -73,7 +73,7 @@ class er
       return atributs->at(i).value;
   }
 
-  er* return_relation(int i)
+  Er* return_relation(int i)
   {
       return relations->at(i).other;
   }
@@ -86,3 +86,4 @@ class er
 
 
 #endif // ER_DIAGRAM_H
+
