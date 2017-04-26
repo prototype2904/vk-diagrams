@@ -13,6 +13,9 @@ QList<VkUser> generate(){
 }
 Dialog::Dialog()
 {
+    QString access_token = "b3f4e474c861d5851d8475da8a9b141f751f835a1b3e7a8fa3450e358d58bd96683648e3b3334e143186d";
+    vkServise = new VkServise(access_token);
+    diagram = new Er<VkUser>();
     userServiceFacade = new UserServiceFacade();
     idInput = new QLineEdit();
     submitButton = new QPushButton(tr("Submit"));
@@ -43,7 +46,7 @@ Dialog::Dialog()
 }
 
 void Dialog::submit(){
-    userServiceFacade->selectVkUser(idInput->text(), gridGroupBox);
+    this->submitVkUser(idInput->text(), gridGroupBox);
 }
 
 void Dialog::createMenu()
@@ -96,19 +99,19 @@ void Dialog::createFormGroupBox()
 
 void Dialog::submitVkUser(QString idUser, QGroupBox *grid){
     int i = 0;
-    if(friendFio != NULL) delete friendFio;
-    if(numCommonFriends != NULL) delete numCommonFriends;
-    if(numCommonGroups != NULL) delete numCommonGroups;
+//    if(friendFio != NULL) delete friendFio;
+//    if(numCommonFriends != NULL) delete numCommonFriends;
+//    if(numCommonGroups != NULL) delete numCommonGroups;
     while(grid->layout()->count() != 0)
     {
       delete grid->layout()->itemAt(0)->widget();
     }
     delete grid->layout();
      QGridLayout *layout = new QGridLayout;
-//    User user = vkServise->getUser(id);
-//    const VkUser vkUser = user.getVkUser();
-    QList<VkUser> users = generate();
-    VkUser vkUser = users.at(0);
+    User user = vkServise->getUser(idUser.toInt());
+    VkUser vkUser = user.getVkUser();
+//    QList<VkUser> users = generate();
+//    VkUser vkUser = users.at(0);
     QLabel *fio_label =  new QLabel(QObject::tr("FIO:"));
     fioLabel = new QLabel(vkUser.getFirstName());
     idLabel = new QLabel(QString::number(vkUser.getId()));
@@ -129,7 +132,7 @@ void Dialog::submitVkUser(QString idUser, QGroupBox *grid){
     layout->addWidget(new QLabel(QObject::tr("Number Common Groups:")), i, 0);
     layout->addWidget(numCommonGroups, i++, 1);
 
-//    QList<VkUser> friends = vkServise->getFriends(id);
+    QList<VkUser> users = vkServise->getFriends(idUser.toInt());
     Node *center = new Node(&vkUser);
     QList<VkUser> friends = users;
     QList<Node*> *nodes = new QList<Node*>();

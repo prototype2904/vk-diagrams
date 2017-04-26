@@ -15,7 +15,6 @@ class UserServiceFacade
 public:
     static Er<VkUser>* getDiagram();
     UserServiceFacade();
-    void selectVkUser(QString idUser, QGroupBox *grid);
 private:
     static Node* centerNode;
     static Er<VkUser> *diagram;

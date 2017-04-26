@@ -3,6 +3,10 @@
 
 #include <QtWidgets/QDialog>
 #include <servise/userservicefacade.h>
+#include <er_diagram.h>
+#include <servise/VkServise.h>
+
+class VkServise;
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -24,11 +28,11 @@ public:
     Dialog();
     void submitVkUser(QString idUser, QGroupBox *grid);
     void selectFriend(QGroupBox *grid);
-    static void setNumCommonFriedns(int number){
-        Dialog::numCommonFriends->setText(QString::number(number));
+    void setNumCommonFriedns(int number){
+        this->numCommonFriends->setText(QString::number(number));
     }
-    static void setNumCommonGroups(int number){
-        Dialog::numCommonGroups->setText(QString::number(number));
+    void setNumCommonGroups(int number){
+        this->numCommonGroups->setText(QString::number(number));
     }
 private slots:
     void submit();
@@ -59,9 +63,11 @@ private:
 
     QMenu *fileMenu;
     QAction *exitAction;
+    Er<VkUser> *diagram;
+    VkServise *vkServise;
 
-    static QLabel* friendFio;
-    static QLabel* numCommonFriends;
-    static QLabel* numCommonGroups;
+     QLabel* friendFio;
+     QLabel* numCommonFriends;
+     QLabel* numCommonGroups;
 };
 #endif
