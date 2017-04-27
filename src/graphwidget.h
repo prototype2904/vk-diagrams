@@ -9,10 +9,11 @@ class GraphWidget : public QGraphicsView
     Q_OBJECT
 
 public:
-    GraphWidget(Node* center, QList<Node*>* friends, QWidget *parent);
-
+    GraphWidget(Node *center, QList<Node*>* friends, QWidget *parent);
+    Node* getSelectNode(){return selectNode;}
+    void setSelectNode(Node* node){selectNode = node;}
     void itemMoved();
-
+    Node* getCenterNode();
 public slots:
     void shuffle();
     void zoomIn();
@@ -30,7 +31,8 @@ protected:
 
 private:
     int timerId;
-    Node *centerNode;
+    Node* centerNode;
+    Node* selectNode = NULL;
 };
 
 #endif // GRAPHWIDGET_H

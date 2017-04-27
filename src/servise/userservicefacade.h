@@ -13,13 +13,13 @@ class VkServise;
 class UserServiceFacade
 {
 public:
-    static Er<VkUser>* getDiagram();
+    QList<User*> getFriends(User* user);
+    User* getUser(QString id);
+    int getNumOwnFriends(User* center, User *select);
+    int getNumOwnGroups(User* center, User *select);
     UserServiceFacade();
 private:
-    static Node* centerNode;
-    static Er<VkUser> *diagram;
-    static VkServise *vkServise;
-    static QGroupBox *grid;
+    VkServise *vkServise;
 };
 
 #endif // USERSERVICEFACADE_H

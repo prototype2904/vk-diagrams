@@ -35,7 +35,8 @@ HEADERS += \
     node.h \
     edge.h \
     graphwidget.h \
-    er_diagram.h
+    er_diagram.h \
+    util/DialogSingleton.h
 
 
 

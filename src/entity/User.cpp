@@ -1,27 +1,27 @@
 #include "User.h"
 
-VkUser User::getVkUser() const
+VkUser* User::getVkUser()
 {
     return vkUser;
 }
 
-void User::setVkUser(const VkUser &value)
+void User::setVkUser(VkUser *value)
 {
     vkUser = value;
 }
 
-QList<VkGroup> User::getVkGroup() const
+QList<VkGroup*> User::getVkGroup() const
 {
     return vkGroup;
 }
 
-void User::setVkGroup(const QList<VkGroup> &value)
+void User::setVkGroup(QList<VkGroup*> value)
 {
     vkGroup = value;
 }
 
 User::User()
 {
-
+    vkUser= NULL;
 }
 

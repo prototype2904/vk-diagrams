@@ -35,11 +35,11 @@ class Er
         delete[] atributs;
   }
 
-  int insert_atribut(std::string name,const T value)
+  int insert_atribut(std::string name, T *value)
   {
     atributs->push_back(atribut());
     atributs->at(i_at).name=name;
-    atributs->at(i_at).value=value;
+    atributs->at(i_at).value=*value;
     i_at++;
     return 0;
   }

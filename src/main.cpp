@@ -1,11 +1,12 @@
 #include <QtWidgets/QApplication>
 
 #include "dialog.h"
+#include "util/DialogSingleton.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    Dialog dialog;
+    Dialog& dialog = DialogSingleton::get();
     dialog.show();
 
     return app.exec();

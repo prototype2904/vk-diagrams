@@ -4,11 +4,11 @@
 
 #include <QGraphicsItem>
 #include <QList>
-#include <entity/vk/VkUser.h>
+#include <entity/User.h>
 
 class Edge;
 class GraphWidget;
-class VkUser;
+class User;
 QT_BEGIN_NAMESPACE
 class QGraphicsSceneMouseEvent;
 QT_END_NAMESPACE
@@ -16,8 +16,9 @@ QT_END_NAMESPACE
 class Node : public QGraphicsItem
 {
 public:
-    Node(VkUser *vkUser);
+    Node(User* user);
     Node(GraphWidget *graphWidget);
+    User* getUser();
     void setGraphWidget(GraphWidget *graphWidget);
     void addEdge(Edge *edge);
     QList<Edge *> edges() const;
@@ -28,6 +29,7 @@ public:
     void calculateForces();
     bool advance();
 
+    Node* getCenterNode();
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
@@ -39,7 +41,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    VkUser *vkUser;
+    User* user;
     QList<Edge *> edgeList;
     QPointF newPos;
     GraphWidget *graph;

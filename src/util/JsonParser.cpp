@@ -4,10 +4,10 @@ JsonParser::JsonParser()
 {
 }
 
-QList<VkUser> JsonParser::getVkUsersFromStrJson(QString strJsonUsers, JsonError &jsonError)
+QList<VkUser*> JsonParser::getVkUsersFromStrJson(QString strJsonUsers, JsonError &jsonError)
 {
 
-     QList<VkUser> vkUsers;
+     QList<VkUser*> vkUsers;
      QJsonDocument jsonDocumentUsers = QJsonDocument::fromJson(strJsonUsers.toUtf8());
 
      QJsonObject jsonObjectUsers = jsonDocumentUsers.object();
@@ -17,7 +17,7 @@ QList<VkUser> JsonParser::getVkUsersFromStrJson(QString strJsonUsers, JsonError 
 
           foreach (const QJsonValue & value, jsonArrayUsers) {
              QJsonObject jsonObjectUser = value.toObject();
-             VkUser vkUser = getUserFromJson(jsonObjectUser);
+             VkUser* vkUser = getUserFromJson(jsonObjectUser);
              vkUsers.append(vkUser);
 
           }
@@ -30,33 +30,33 @@ QList<VkUser> JsonParser::getVkUsersFromStrJson(QString strJsonUsers, JsonError 
      return vkUsers;
 }
 
-VkUser JsonParser::getUserFromJson(QJsonObject jsonObjectUser)
+VkUser* JsonParser::getUserFromJson(QJsonObject jsonObjectUser)
 {
-    VkUser vkUser;
+    VkUser* vkUser = new VkUser();
 
     if( !(jsonObjectUser["first_name"].isNull()) )
-        vkUser.setFirstName(jsonObjectUser["first_name"].toString());
+        vkUser->setFirstName(jsonObjectUser["first_name"].toString());
 
     if( !(jsonObjectUser["last_name"].isNull()) )
-        vkUser.setLastName(jsonObjectUser["last_name"].toString());
+        vkUser->setLastName(jsonObjectUser["last_name"].toString());
 
     if( !(jsonObjectUser["id"].isNull()) )
-        vkUser.setId(jsonObjectUser["id"].toInt());
+        vkUser->setId(jsonObjectUser["id"].toInt());
 
     if( !(jsonObjectUser["deactivated"].isNull()) )
-        vkUser.setDeactivated(jsonObjectUser["deactivated"].toString());
+        vkUser->setDeactivated(jsonObjectUser["deactivated"].toString());
 
     if( !(jsonObjectUser["hidden"].isNull()) )
-        vkUser.setHidden(jsonObjectUser["hidden"].toString());
+        vkUser->setHidden(jsonObjectUser["hidden"].toString());
 
     return vkUser;
 }
 
 
 
-QList<VkGroup> JsonParser::getVkGroupsFromStrJson(QString strJsonGroup, JsonError &jsonError)
+QList<VkGroup*> JsonParser::getVkGroupsFromStrJson(QString strJsonGroup, JsonError &jsonError)
 {
-    QList<VkGroup> vkGroups;
+    QList<VkGroup*> vkGroups;
 
     QJsonDocument jsonDocumentGroups = QJsonDocument::fromJson(strJsonGroup.toUtf8());
 
@@ -70,7 +70,7 @@ QList<VkGroup> JsonParser::getVkGroupsFromStrJson(QString strJsonGroup, JsonErro
             foreach (const QJsonValue & value, jsonArrayGroups) {
 
                 QJsonObject jsonObjectGroup = value.toObject();
-                VkGroup vkGroup = getGroupFromJson(jsonObjectGroup);
+                VkGroup* vkGroup = getGroupFromJson(jsonObjectGroup);
                 vkGroups.append(vkGroup);
             }
              jsonError = JSON_NOERROR;
@@ -87,15 +87,15 @@ QList<VkGroup> JsonParser::getVkGroupsFromStrJson(QString strJsonGroup, JsonErro
     return vkGroups;
 }
 
-VkGroup JsonParser::getGroupFromJson(QJsonObject jsonOnjectGroup)
+VkGroup* JsonParser::getGroupFromJson(QJsonObject jsonOnjectGroup)
 {
-    VkGroup vkGroup;
+    VkGroup *vkGroup = new VkGroup();
 
     if( !(jsonOnjectGroup["id"].isNull()) )
-        vkGroup.setId(jsonOnjectGroup["id"].toInt());
+        vkGroup->setId(jsonOnjectGroup["id"].toInt());
 
     if( !(jsonOnjectGroup["name"].isNull()) )
-        vkGroup.setName(jsonOnjectGroup["name"].toString());
+        vkGroup->setName(jsonOnjectGroup["name"].toString());
 
 
     return vkGroup;

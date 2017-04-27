@@ -13,8 +13,6 @@ QList<VkUser> generate(){
 }
 Dialog::Dialog()
 {
-    QString access_token = "b3f4e474c861d5851d8475da8a9b141f751f835a1b3e7a8fa3450e358d58bd96683648e3b3334e143186d";
-    vkServise = new VkServise(access_token);
     diagram = new Er<VkUser>();
     userServiceFacade = new UserServiceFacade();
     idInput = new QLineEdit();
@@ -107,17 +105,24 @@ void Dialog::submitVkUser(QString idUser, QGroupBox *grid){
       delete grid->layout()->itemAt(0)->widget();
     }
     delete grid->layout();
-     QGridLayout *layout = new QGridLayout;
-    User user = vkServise->getUser(idUser.toInt());
-    VkUser vkUser = user.getVkUser();
+     QGridLayout *layout = new QGridLayout();
+     layout->activate();
+    User* user = userServiceFacade->getUser(idUser);
+    VkUser *vkUser = user->getVkUser();
 //    QList<VkUser> users = generate();
 //    VkUser vkUser = users.at(0);
     QLabel *fio_label =  new QLabel(QObject::tr("FIO:"));
-    fioLabel = new QLabel(vkUser.getFirstName());
-    idLabel = new QLabel(QString::number(vkUser.getId()));
+    fio_label->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+    fioLabel = new QLabel(vkUser->getFirstName().append(" ").append(vkUser->getLastName()));
+    fioLabel->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+    idLabel = new QLabel(QString::number(vkUser->getId()));
+    idLabel->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     friendFio = new QLabel();
+    friendFio->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     numCommonFriends = new QLabel();
+    numCommonFriends->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     numCommonGroups = new QLabel();
+    numCommonGroups->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     layout->addWidget(new QLabel(QObject::tr("ID:")), i,0);
     layout->addWidget(idLabel, i++, 1);
     layout->addWidget(fio_label, i, 0);
@@ -132,47 +137,21 @@ void Dialog::submitVkUser(QString idUser, QGroupBox *grid){
     layout->addWidget(new QLabel(QObject::tr("Number Common Groups:")), i, 0);
     layout->addWidget(numCommonGroups, i++, 1);
 
-    QList<VkUser> users = vkServise->getFriends(idUser.toInt());
-    Node *center = new Node(&vkUser);
-    QList<VkUser> friends = users;
+    QList<User*> friends = userServiceFacade->getFriends(user);
+    Node *center = new Node(user);
     QList<Node*> *nodes = new QList<Node*>();
-    diagram->insert_atribut(vkUser.getFirstName().toStdString(), vkUser);
-    foreach (VkUser user, friends) {
-        Er<VkUser> *er = new Er<VkUser>();
-        er -> insert_atribut(user.getFirstName().toStdString(), user);
-        diagram->insert_relation(QObject::tr("Has").toStdString(), er);
-        nodes->append(new Node(&user));
+    diagram->insert_atribut(vkUser->getFirstName().toStdString(), vkUser);
+    foreach (User* f, friends) {
+        if(f->getVkUser() != NULL){
+            Er<VkUser> *er = new Er<VkUser>();
+            er -> insert_atribut(f->getVkUser()->getFirstName().toStdString(), f->getVkUser());
+            diagram->insert_relation(QObject::tr("Has").toStdString(), er);
+            nodes->append(new Node(f));
+        }
     }
 
     GraphWidget *graphwidget = new GraphWidget(center, nodes, grid);
-    layout->addWidget(graphwidget, 0, 3, 4, 1);
+    layout->addWidget(graphwidget, 0, 2, i, 1);
     grid->setLayout(layout);
 }
-
-//void Dialog::selectFriend(QString idUser, QGroupBox *grid){
-
-//    User user = vkServise->getUser(id);
-//    const VkUser vkUser = user.getVkUser();
-//    QList<VkUser> users = generate();
-//    VkUser vkUser = users.at(0);
-//    QLabel *fio_label =  new QLabel(QObject::tr("FIO:"));
-//    QLabel *fio = new QLabel(vkUser.getFirstName());
-//    layout->addWidget(fio_label, 0, 0);
-//    layout->addWidget(fio, 0, 1);
-////    QList<VkUser> friends = vkServise->getFriends(id);
-//    Node *center = new Node(&vkUser);
-//     QList<VkUser> friends = users;
-//     QList<Node*> *nodes = new QList<Node*>();
-//    diagram->insert_atribut(vkUser.getFirstName().toStdString(), vkUser);
-//    foreach (VkUser user, friends) {
-//        Er<VkUser> *er = new Er<VkUser>();
-//        er -> insert_atribut(user.getFirstName().toStdString(), user);
-//        diagram->insert_relation(QObject::tr("Has").toStdString(), er);
-//        nodes->append(new Node(&user));
-//    }
-
-//    GraphWidget *graphwidget = new GraphWidget(center, nodes, grid);
-//    layout->addWidget(graphwidget, 0, 3, 4, 1);
-//    grid->setLayout(layout);
-//}
 

@@ -27,7 +27,10 @@ class Dialog : public QDialog
 public:
     Dialog();
     void submitVkUser(QString idUser, QGroupBox *grid);
-    void selectFriend(QGroupBox *grid);
+    void setFriendName(QString name){
+        this->friendFio->setText(name);
+    }
+
     void setNumCommonFriedns(int number){
         this->numCommonFriends->setText(QString::number(number));
     }

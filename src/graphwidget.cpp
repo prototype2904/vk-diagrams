@@ -6,19 +6,23 @@
 
 #include <QKeyEvent>
 
-GraphWidget::GraphWidget(Node* center, QList<Node*>* friends, QWidget *parent)
+Node* GraphWidget::getCenterNode(){
+    return centerNode;
+}
+
+GraphWidget::GraphWidget(Node *center, QList<Node*>* friends, QWidget *parent)
     : QGraphicsView(parent), timerId(0)
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(-200, -200, 400, 400);
+    scene->setSceneRect(-500, -500, 600, 600);
     setScene(scene);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
-    scale(qreal(0.8), qreal(0.8));
-    setMinimumSize(400, 400);
+//    scale(qreal(0.8), qreal(0.8));
+    setMinimumSize(600, 600);
     setWindowTitle(tr("Elastic Nodes"));
     if(center != NULL){
         centerNode = center;
@@ -30,11 +34,14 @@ GraphWidget::GraphWidget(Node* center, QList<Node*>* friends, QWidget *parent)
         for(int i = 0; i < friends->size(); i++) {
             Node* friend_ = friends->at(i);
             friend_->setGraphWidget(this);
+
             scene->addItem(friend_);
-            if(center != NULL){
+                        if(center != NULL){
                 scene->addItem(new Edge(friend_, centerNode));
-            }
-            friend_ ->setPos((qreal)(rand() % 50), (qreal)(rand() % 50));
+                        }
+            int r = rand()% 100;
+            qreal a = (r >= 50)? 1 : -1;
+            friend_ ->setPos(a *(qreal)(rand() % 200), (-a) *(qreal)(rand() % 200));
         }
     }
 }

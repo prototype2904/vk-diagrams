@@ -2,7 +2,10 @@
 #include "edge.h"
 #include "node.h"
 #include "graphwidget.h"
+#include "servise/userservicefacade.h"
+#include "dialog.h"
 
+#include "util/DialogSingleton.h"
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
@@ -16,15 +19,18 @@ Node::Node(GraphWidget *graphWidget)
     setCacheMode(DeviceCoordinateCache);
     setZValue(-1);
 }
-Node::Node(VkUser *vkUser)
+Node::Node(User* user)
 {
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
     setZValue(-1);
-    this->vkUser = vkUser;
+    this->user = user;
 }
 
+User* Node::getUser(){
+    return user;
+}
 
 void Node::setGraphWidget(GraphWidget *graphWidget){
     this->graph = graphWidget;
@@ -121,6 +127,14 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         gradient.setColorAt(0, Qt::yellow);
         gradient.setColorAt(1, Qt::darkYellow);
     }
+    if(getCenterNode() == this){
+        gradient.setColorAt(0, Qt::red);
+        gradient.setColorAt(1, Qt::darkRed);
+    }
+    if(this->graph->getSelectNode() == this){
+        gradient.setColorAt(0, Qt::blue);
+        gradient.setColorAt(1, Qt::darkBlue);
+    }
     painter->setBrush(gradient);
 
     painter->setPen(QPen(Qt::black, 0));
@@ -142,8 +156,13 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
     return QGraphicsItem::itemChange(change, value);
 }
 
+Node* Node::getCenterNode(){
+    return this->graph->getCenterNode();
+}
+
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+
     update();
     QGraphicsItem::mousePressEvent(event);
 }
@@ -152,4 +171,23 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     update();
     QGraphicsItem::mouseReleaseEvent(event);
+    UserServiceFacade userServiceFacade;
+    User* centerUser = getCenterNode()->getUser();
+    User* selectUser = this->user;
+    if(centerUser != selectUser){
+        int ownFriends = userServiceFacade.getNumOwnFriends(centerUser, selectUser);
+        int ownGroups = userServiceFacade.getNumOwnGroups(centerUser, selectUser);
+        Dialog &dialog = DialogSingleton::get();
+        dialog.setNumCommonFriedns(ownFriends);
+        dialog.setNumCommonGroups(ownGroups);
+        dialog.setFriendName(selectUser->getVkUser()->getLastName().append(" ").append(selectUser->getVkUser()->getFirstName()));
+        update();
+        Node *repaint = this->graph->getSelectNode();
+        if(repaint != NULL){
+            this->graph->setSelectNode(NULL);
+            update();
+        }
+        this->graph->setSelectNode(this);
+
+    }
 }

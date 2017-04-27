@@ -16,11 +16,11 @@
 public:
 
     JsonParser();
-    static QList<VkUser> getVkUsersFromStrJson(QString strJsonUsers, JsonError &jsonError);
-    static VkUser getUserFromJson(QJsonObject jsonObjectUser);
+    static QList<VkUser*> getVkUsersFromStrJson(QString strJsonUsers, JsonError &jsonError);
+    static VkUser* getUserFromJson(QJsonObject jsonObjectUser);
 
-    static QList<VkGroup> getVkGroupsFromStrJson(QString strJsonGroup, JsonError &jsonError);
-    static VkGroup getGroupFromJson(QJsonObject jsonOnjectGroup);
+    static QList<VkGroup*> getVkGroupsFromStrJson(QString strJsonGroup, JsonError &jsonError);
+    static VkGroup* getGroupFromJson(QJsonObject jsonOnjectGroup);
 
     static QList<int> getFriendsFromStrJson(QString strJsonFriends, JsonError &jsonError);
 
