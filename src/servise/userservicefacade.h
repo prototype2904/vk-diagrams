@@ -2,24 +2,26 @@
 #define USERSERVICEFACADE_H
 #include <er_diagram.h>
 #include <node.h>
-#include <servise/VkServise.h>
+#include <servise/userservice.h>
 #include <QtWidgets>
 #include <QtWidgets/QDialog>
 
 
-template <typename T> class Er;
-class VkServise;
+class UserService;
+template<typename T> class Entity;
+template<typename T> class ER;
 
 class UserServiceFacade
 {
 public:
-    QList<User*> getFriends(User* user);
+    QList<User*>* getFriends(User* user);
     User* getUser(QString id);
+    ER<User*>* createER(QString id);
     int getNumOwnFriends(User* center, User *select);
     int getNumOwnGroups(User* center, User *select);
     UserServiceFacade();
 private:
-    VkServise *vkServise;
+    UserService *userService;
 };
 
 #endif // USERSERVICEFACADE_H

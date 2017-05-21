@@ -17,7 +17,11 @@ SOURCES += main.cpp \
     servise/userservicefacade.cpp \
     node.cpp \
     edge.cpp \
-    graphwidget.cpp
+    graphwidget.cpp \
+    relation.cpp \
+    er_diagram.cpp \
+    entity/group.cpp \
+    servise/userservice.cpp
 
 
 
@@ -36,7 +40,11 @@ HEADERS += \
     edge.h \
     graphwidget.h \
     er_diagram.h \
-    util/DialogSingleton.h
+    util/DialogSingleton.h \
+    entity.h \
+    relation.h \
+    entity/group.h \
+    servise/userservice.h
 
 
 

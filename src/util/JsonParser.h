@@ -10,16 +10,21 @@
 #include <QJsonDocument>
 #include <QList>
 #include <QDebug>
+#include "entity/User.h"
+#include "entity/group.h"
+
+class User;
+class Group;
 
  class JsonParser
 {
 public:
 
     JsonParser();
-    static QList<VkUser*> getVkUsersFromStrJson(QString strJsonUsers, JsonError &jsonError);
-    static VkUser* getUserFromJson(QJsonObject jsonObjectUser);
+    static QList<User*>* getVkUsersFromStrJson(QString strJsonUsers, JsonError &jsonError);
+    static User* getUserFromJson(QJsonObject jsonObjectUser);
 
-    static QList<VkGroup*> getVkGroupsFromStrJson(QString strJsonGroup, JsonError &jsonError);
+    static QList<Group*>* getVkGroupsFromStrJson(QString strJsonGroup, JsonError &jsonError);
     static VkGroup* getGroupFromJson(QJsonObject jsonOnjectGroup);
 
     static QList<int> getFriendsFromStrJson(QString strJsonFriends, JsonError &jsonError);

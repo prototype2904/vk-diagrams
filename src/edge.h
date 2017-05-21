@@ -2,10 +2,12 @@
 #define EDGE_H
 
 #include <QGraphicsItem>
+#include "relation.h"
 
 class Node;
+class Relation;
 
-class Edge : public QGraphicsItem
+class Edge : public QGraphicsItem, public Relation
 {
 public:
     Edge(Node *sourceNode, Node *destNode);
@@ -24,7 +26,6 @@ protected:
 
 private:
     Node *source, *dest;
-
     QPointF sourcePoint;
     QPointF destPoint;
     qreal arrowSize;

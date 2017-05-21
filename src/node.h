@@ -5,24 +5,34 @@
 #include <QGraphicsItem>
 #include <QList>
 #include <entity/User.h>
+#include <entity.h>
+
 
 class Edge;
 class GraphWidget;
 class User;
+
+
 QT_BEGIN_NAMESPACE
 class QGraphicsSceneMouseEvent;
 QT_END_NAMESPACE
 
-class Node : public QGraphicsItem
+class Node : public QGraphicsItem, public Entity<User*>
 {
 public:
-    Node(User* user);
-    Node(GraphWidget *graphWidget);
+    static const int WIDTH = 180 ;
+    static const int HEIGHT = 90;
+    Node();
+    Node(Entity<User*> *entity);
+    Node(Entity<User*> *entity,GraphWidget *graphWidget);
+    ~Node();
     User* getUser();
+    Entity<User*>* getEntity();
     void setGraphWidget(GraphWidget *graphWidget);
     void addEdge(Edge *edge);
     QList<Edge *> edges() const;
-
+    void drawEntity(QPainter *painter, bool focus, bool isAbstract);
+    void drawRelation(Relation* r,QPainter *painter, bool focus);
     enum { Type = UserType + 1 };
     int type() const override { return Type; }
 
@@ -41,8 +51,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    User* user;
-    QList<Edge *> edgeList;
+    Entity<User*>* entity;
     QPointF newPos;
     GraphWidget *graph;
 };

@@ -1,6 +1,6 @@
 #include "VkUser.h"
 
-int VkUser::getId() const
+int VkUser::getId()
 {
     return _id;
 }
@@ -48,6 +48,10 @@ QString VkUser::getHidden() const
 void VkUser::setHidden(const QString &hidden)
 {
     _hidden = hidden;
+}
+
+QString VkUser::getFio(){
+    return QString().append(getFirstName()).append(" ").append(getLastName());
 }
 
 VkUser::VkUser()

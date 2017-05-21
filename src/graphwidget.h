@@ -2,18 +2,24 @@
 #define GRAPHWIDGET_H
 
 #include <QGraphicsView>
+#include <entity/User.h>
+#include "er_diagram.h"
 
+
+class User;
+template<typename T> class Entity;
+template<typename T> class ER;
 class Node;
 class GraphWidget : public QGraphicsView
 {
     Q_OBJECT
 
 public:
-    GraphWidget(Node *center, QList<Node*>* friends, QWidget *parent);
-    Node* getSelectNode(){return selectNode;}
-    void setSelectNode(Node* node){selectNode = node;}
+    GraphWidget(QWidget *parent, ER<User*>* er);
     void itemMoved();
-    Node* getCenterNode();
+    Node* getNode();
+    void drawRelation(Relation* r, bool focus);
+    void drawEntity(Entity<User*>* e,QPainter *painter, bool focus, bool isAbstract);
 public slots:
     void shuffle();
     void zoomIn();
@@ -26,13 +32,14 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 #endif
     void drawBackground(QPainter *painter, const QRectF &rect) override;
+ //   void paintEvent(QPaintEvent *);
 
     void scaleView(qreal scaleFactor);
 
 private:
     int timerId;
-    Node* centerNode;
-    Node* selectNode = NULL;
+    ER<User*>* er;
+    Node* node;
 };
 
 #endif // GRAPHWIDGET_H

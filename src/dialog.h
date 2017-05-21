@@ -39,6 +39,7 @@ public:
     }
 private slots:
     void submit();
+    void createSocialGraph();
 private:
     void createMenu();
     void createHorizontalGroupBox();
@@ -48,8 +49,10 @@ private:
     enum { NumGridRows = 3, NumButtons = 4 };
 
     QPushButton *submitButton;
+    QPushButton *socialGrpahButton;
     QLineEdit *idInput;
     UserServiceFacade *userServiceFacade;
+    QGridLayout *layout;
 
     QLabel* fioLabel;
     QLabel* idLabel;
@@ -66,8 +69,8 @@ private:
 
     QMenu *fileMenu;
     QAction *exitAction;
-    Er<VkUser> *diagram;
-    VkServise *vkServise;
+    ER<User*> *diagram;
+    GraphWidget* graphwidget;
 
      QLabel* friendFio;
      QLabel* numCommonFriends;

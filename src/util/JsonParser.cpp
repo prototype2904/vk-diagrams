@@ -4,10 +4,10 @@ JsonParser::JsonParser()
 {
 }
 
-QList<VkUser*> JsonParser::getVkUsersFromStrJson(QString strJsonUsers, JsonError &jsonError)
+QList<User*>* JsonParser::getVkUsersFromStrJson(QString strJsonUsers, JsonError &jsonError)
 {
 
-     QList<VkUser*> vkUsers;
+     QList<User*>* vkUsers = new QList<User*>();
      QJsonDocument jsonDocumentUsers = QJsonDocument::fromJson(strJsonUsers.toUtf8());
 
      QJsonObject jsonObjectUsers = jsonDocumentUsers.object();
@@ -17,8 +17,8 @@ QList<VkUser*> JsonParser::getVkUsersFromStrJson(QString strJsonUsers, JsonError
 
           foreach (const QJsonValue & value, jsonArrayUsers) {
              QJsonObject jsonObjectUser = value.toObject();
-             VkUser* vkUser = getUserFromJson(jsonObjectUser);
-             vkUsers.append(vkUser);
+             User* vkUser = getUserFromJson(jsonObjectUser);
+             vkUsers->append(vkUser);
 
           }
           jsonError = JSON_NOERROR;
@@ -30,7 +30,7 @@ QList<VkUser*> JsonParser::getVkUsersFromStrJson(QString strJsonUsers, JsonError
      return vkUsers;
 }
 
-VkUser* JsonParser::getUserFromJson(QJsonObject jsonObjectUser)
+User* JsonParser::getUserFromJson(QJsonObject jsonObjectUser)
 {
     VkUser* vkUser = new VkUser();
 
@@ -54,9 +54,9 @@ VkUser* JsonParser::getUserFromJson(QJsonObject jsonObjectUser)
 
 
 
-QList<VkGroup*> JsonParser::getVkGroupsFromStrJson(QString strJsonGroup, JsonError &jsonError)
+QList<Group*>* JsonParser::getVkGroupsFromStrJson(QString strJsonGroup, JsonError &jsonError)
 {
-    QList<VkGroup*> vkGroups;
+    QList<Group*>* vkGroups = new QList<Group*>();
 
     QJsonDocument jsonDocumentGroups = QJsonDocument::fromJson(strJsonGroup.toUtf8());
 
@@ -71,7 +71,7 @@ QList<VkGroup*> JsonParser::getVkGroupsFromStrJson(QString strJsonGroup, JsonErr
 
                 QJsonObject jsonObjectGroup = value.toObject();
                 VkGroup* vkGroup = getGroupFromJson(jsonObjectGroup);
-                vkGroups.append(vkGroup);
+                vkGroups->append(vkGroup);
             }
              jsonError = JSON_NOERROR;
         }

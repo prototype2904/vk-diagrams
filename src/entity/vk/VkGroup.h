@@ -1,16 +1,20 @@
 #ifndef VKGROUP_H
 #define VKGROUP_H
 #include <QString>
-class VkGroup
+#include "entity/group.h"
+
+class Group;
+
+class VkGroup : public Group
 {
 private:
     int _id;
     QString _name;
 public:
     VkGroup();
-    int getId() const;
+    int getId();
     void setId(int id);
-    QString getName() const;
+    QString getName();
     void setName(const QString &name);
 };
 

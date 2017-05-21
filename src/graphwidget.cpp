@@ -1,18 +1,43 @@
 #include "graphwidget.h"
 #include "edge.h"
 #include "node.h"
+#include "entity/vk/VkUser.h"
 
 #include <math.h>
+#include "entity.h"
 
 #include <QKeyEvent>
 
-Node* GraphWidget::getCenterNode(){
-    return centerNode;
+int getRand(){
+    int a = (rand()%10)>5?1:-1;
+    return  a * (rand()%500) -200;
 }
 
-GraphWidget::GraphWidget(Node *center, QList<Node*>* friends, QWidget *parent)
+Node *findNodeByEntity(QList<Node*> list, Entity<User*> *e){
+    foreach (Node* n, list) {
+        if(n->getEntity() == e){
+            return n;
+        }
+    }
+}
+
+GraphWidget::GraphWidget(QWidget *parent, ER<User*>* er)
     : QGraphicsView(parent), timerId(0)
 {
+//    User* user = new VkUser(QObject::tr("Роман"), QObject::tr("Стецкевич"), 1);
+//    Entity<User*>* entity = new Entity<User*>();
+//    entity->setValue(new VkUser(QObject::tr("Роман"), QObject::tr("Стецкевич"), 1));
+//    User* user2 = new VkUser(QObject::tr("Андрей"), QObject::tr("Чуланов"), 1);
+//    Entity<User*>* entity2 = new Entity<User*>();
+//    entity2->setValue(new VkUser(QObject::tr("Андрей"), QObject::tr("Чуланов"), 1));
+//    this->node = new Node(entity);
+//    Node* nod = new Node(entity2);
+//    nod->setPos(-200, -200);
+//    node->setPos(0, 0);
+//    Edge* edge = new Edge(node, nod);
+    this->er = er;
+
+
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
     scene->setSceneRect(-500, -500, 600, 600);
@@ -21,29 +46,28 @@ GraphWidget::GraphWidget(Node *center, QList<Node*>* friends, QWidget *parent)
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
-//    scale(qreal(0.8), qreal(0.8));
     setMinimumSize(600, 600);
     setWindowTitle(tr("Elastic Nodes"));
-    if(center != NULL){
-        centerNode = center;
-        centerNode->setGraphWidget(this);
-        scene->addItem(centerNode);
-        centerNode->setPos(0, 0);
-    }
-    if(friends != NULL){
-        for(int i = 0; i < friends->size(); i++) {
-            Node* friend_ = friends->at(i);
-            friend_->setGraphWidget(this);
-
-            scene->addItem(friend_);
-                        if(center != NULL){
-                scene->addItem(new Edge(friend_, centerNode));
-                        }
-            int r = rand()% 100;
-            qreal a = (r >= 50)? 1 : -1;
-            friend_ ->setPos(a *(qreal)(rand() % 200), (-a) *(qreal)(rand() % 200));
+    QList<Node*> list;
+    for(int i = 0; i < er->getEntityCount(); i++){
+        Node* n = new Node(er->entityAt(i), this);
+        list.append(n);
+        n->getEntity()->getValue()->getFio();
+        n->getEntity()->getValue()->getId();
+        if(i == 0){
+            this->node = n;
         }
+        n->setPos(getRand(), getRand());
+        scene->addItem(n);
     }
+    for(int i = 0; i < er->getRelationCount(); i++){
+        Relation* r = er->relationAt(i);
+        scene->addItem(new Edge(findNodeByEntity(list, r->getEntL()), findNodeByEntity(list, r->getEntR())));
+    }
+}
+
+Node* GraphWidget::getNode(){
+    return this->node;
 }
 
 void GraphWidget::itemMoved()
@@ -55,18 +79,6 @@ void GraphWidget::itemMoved()
 void GraphWidget::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-    case Qt::Key_Up:
-        centerNode->moveBy(0, -20);
-        break;
-    case Qt::Key_Down:
-        centerNode->moveBy(0, 20);
-        break;
-    case Qt::Key_Left:
-        centerNode->moveBy(-20, 0);
-        break;
-    case Qt::Key_Right:
-        centerNode->moveBy(20, 0);
-        break;
     case Qt::Key_Plus:
         zoomIn();
         break;
@@ -152,6 +164,8 @@ void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
 //    painter->setPen(Qt::black);
 //    painter->drawText(textRect, message);
 }
+
+
 
 void GraphWidget::scaleView(qreal scaleFactor)
 {

@@ -13,11 +13,13 @@ QList<VkUser> generate(){
 }
 Dialog::Dialog()
 {
-    diagram = new Er<VkUser>();
     userServiceFacade = new UserServiceFacade();
     idInput = new QLineEdit();
     submitButton = new QPushButton(tr("Submit"));
     connect(submitButton, SIGNAL(released()), this, SLOT(submit()));
+
+    socialGrpahButton = new QPushButton(tr("Нарисовать социальный граф"));
+    connect(socialGrpahButton, SIGNAL(released()), this, SLOT(createSocialGraph()));
 
     createMenu();
     createHorizontalGroupBox();
@@ -64,6 +66,7 @@ void Dialog::createHorizontalGroupBox()
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(idInput);
     layout->addWidget(submitButton);
+    layout->addWidget(socialGrpahButton);
     horizontalGroupBox->setLayout(layout);
 }
 
@@ -77,12 +80,12 @@ void Dialog::createGridGroupBox()
     layout->addWidget(fio_label, 0, 0);
     layout->addWidget(fio, 0, 1);
 
-    GraphWidget *graphwidget = new GraphWidget(NULL, NULL, gridGroupBox);
-    layout->addWidget(graphwidget, 0, 2, 4, 1);
+//    GraphWidget *graphwidget = new GraphWidget(this);
+//    layout->addWidget(graphwidget, 0, 2, 4, 1);
 
-    layout->setColumnStretch(1, 10);
-    layout->setColumnStretch(2, 20);
-    gridGroupBox->setLayout(layout);
+//    layout->setColumnStretch(1, 10);
+//    layout->setColumnStretch(2, 20);
+//    gridGroupBox->setLayout(layout);
 }
 
 void Dialog::createFormGroupBox()
@@ -97,61 +100,40 @@ void Dialog::createFormGroupBox()
 
 void Dialog::submitVkUser(QString idUser, QGroupBox *grid){
     int i = 0;
-//    if(friendFio != NULL) delete friendFio;
-//    if(numCommonFriends != NULL) delete numCommonFriends;
-//    if(numCommonGroups != NULL) delete numCommonGroups;
-    while(grid->layout()->count() != 0)
-    {
-      delete grid->layout()->itemAt(0)->widget();
-    }
-    delete grid->layout();
-     QGridLayout *layout = new QGridLayout();
-     layout->activate();
-    User* user = userServiceFacade->getUser(idUser);
-    VkUser *vkUser = user->getVkUser();
-//    QList<VkUser> users = generate();
-//    VkUser vkUser = users.at(0);
-    QLabel *fio_label =  new QLabel(QObject::tr("FIO:"));
-    fio_label->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-    fioLabel = new QLabel(vkUser->getFirstName().append(" ").append(vkUser->getLastName()));
-    fioLabel->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-    idLabel = new QLabel(QString::number(vkUser->getId()));
-    idLabel->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-    friendFio = new QLabel();
-    friendFio->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-    numCommonFriends = new QLabel();
-    numCommonFriends->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-    numCommonGroups = new QLabel();
-    numCommonGroups->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-    layout->addWidget(new QLabel(QObject::tr("ID:")), i,0);
-    layout->addWidget(idLabel, i++, 1);
-    layout->addWidget(fio_label, i, 0);
-    layout->addWidget(fioLabel, i++, 1);
 
-    layout->addWidget(new QLabel(QObject::tr("Friend FIO:")), i, 0);
-    layout->addWidget(friendFio, i++, 1);
-
-    layout->addWidget(new QLabel(QObject::tr("Number Common Friends:")), i, 0);
-    layout->addWidget(numCommonFriends, i++, 1);
-
-    layout->addWidget(new QLabel(QObject::tr("Number Common Groups:")), i, 0);
-    layout->addWidget(numCommonGroups, i++, 1);
-
-    QList<User*> friends = userServiceFacade->getFriends(user);
-    Node *center = new Node(user);
-    QList<Node*> *nodes = new QList<Node*>();
-    diagram->insert_atribut(vkUser->getFirstName().toStdString(), vkUser);
-    foreach (User* f, friends) {
-        if(f->getVkUser() != NULL){
-            Er<VkUser> *er = new Er<VkUser>();
-            er -> insert_atribut(f->getVkUser()->getFirstName().toStdString(), f->getVkUser());
-            diagram->insert_relation(QObject::tr("Has").toStdString(), er);
-            nodes->append(new Node(f));
+    if(grid != NULL){
+        while(grid->layout() != NULL && grid->layout()->count() != 0)
+        {
+          delete grid->layout()->itemAt(0)->widget();
         }
+        delete grid->layout();
     }
-
-    GraphWidget *graphwidget = new GraphWidget(center, nodes, grid);
+    QGridLayout *layout = new QGridLayout();
+     layout->activate();
+    ER<User*>* er = userServiceFacade->createER(idUser);
+    GraphWidget *graphwidget = new GraphWidget(this, er);
     layout->addWidget(graphwidget, 0, 2, i, 1);
     grid->setLayout(layout);
+    this->layout = layout;
+    diagram = er;
+    this->graphwidget = graphwidget;
+}
+
+void Dialog::createSocialGraph(){
+    delete this->layout;
+    QList<User*>* friends = userServiceFacade->getFriends( diagram->entityAt(0)->getValue());
+    for(int i =0; i < friends->size(); i++){
+        Entity<User*>* e = new Entity<User*>(friends->at(i));
+        diagram->addEntity(e);
+        diagram->addRelation(QObject::tr("Дружит"), diagram->entityAt(0), e, false, false, false, false);
+    }
+//    delete this->graphwidget;
+    QGridLayout *layout = new QGridLayout();
+    layout->activate();
+    GraphWidget *graphwidget = new GraphWidget(this, diagram);
+    layout->addWidget(graphwidget, 0, 2, 0, 1);
+    gridGroupBox->setLayout(layout);
+    this->graphwidget = graphwidget;
+    this->layout = layout;
 }
 

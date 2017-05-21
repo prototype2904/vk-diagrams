@@ -1,34 +1,33 @@
 #include "userservicefacade.h"
-
+#include "servise/VkServise.h"
 
 UserServiceFacade::UserServiceFacade()
 {
-    QString access_token = "fb6fe7a6462893ca5bd7c191415c93218300e429986433041f2dbfac803bc6e109e6a686b1354b9f7d994";
-    vkServise = new VkServise(access_token);
+    QString access_token = "75314cff911e687ce2bfe8f8f79cafce6221be8b65464ab7261f3e77ca3f0e7b3cfb3ea6b823c6feb6e53";
+    userService = new VkServise(access_token);
 }
 
-QList<User*> UserServiceFacade::getFriends(User* user)
+QList<User*>* UserServiceFacade::getFriends(User* user)
 {
-    QList<VkUser*> friends = vkServise->getFriends(user->getVkUser()->getId());
-    QList<User*> users;
-    foreach(VkUser* vk, friends){
-        user = vkServise->getUser(vk->getId());
-        users.append(user);
-    }
-    return users;
+    return userService->getFriends(user->getId());
 }
 
 User* UserServiceFacade::getUser(QString id){
-    User * user = vkServise->getUser(id.toInt());
-    return user;
+    return userService->getUser(id.toInt());
+}
+
+ER<User*>* UserServiceFacade::createER(QString id){
+    ER<User*>* er = new ER<User*>();
+    er->addEntity(new Entity<User*>(getUser(id)));
+    return er;
 }
 
 int UserServiceFacade::getNumOwnGroups(User *center, User *select){
 
     int ownGroups = 0;
-    for(int i = 0; i < center->getVkGroup().size(); i++){
-        for(int j = 0; j < select->getVkGroup().size(); j++){
-            if(select->getVkGroup().at(j)->getId() == center->getVkGroup().at(i)->getId()){
+    for(int i = 0; i < center->getGroups()->size(); i++){
+        for(int j = 0; j < select->getGroups()->size(); j++){
+            if(select->getGroups()->at(j)->getId() == center->getGroups()->at(i)->getId()){
                 ownGroups++;
                 break;
             }
@@ -39,12 +38,12 @@ int UserServiceFacade::getNumOwnGroups(User *center, User *select){
 
 int UserServiceFacade::getNumOwnFriends(User* center, User* select){
 
-    QList<VkUser*> centerFriends= vkServise->getFriends(center->getVkUser()->getId());
-    QList<VkUser*> selectFriends= vkServise->getFriends(select->getVkUser()->getId());
+    QList<User*>* centerFriends= userService->getFriends(center->getId());
+    QList<User*>* selectFriends= userService->getFriends(select->getId());
     int ownFriends = 0;
-    for(int i = 0; i < centerFriends.size(); i++){
-        for(int j = 0; j < selectFriends.size(); j++){
-            if(selectFriends.at(j)->getId() == centerFriends.at(i)->getId()){
+    for(int i = 0; i < centerFriends->size(); i++){
+        for(int j = 0; j < selectFriends->size(); j++){
+            if(selectFriends->at(j)->getId() == centerFriends->at(i)->getId()){
                 ownFriends++;
                 break;
             }

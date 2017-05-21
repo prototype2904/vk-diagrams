@@ -1,6 +1,6 @@
 #include "VkGroup.h"
 
-int VkGroup::getId() const
+int VkGroup::getId()
 {
     return _id;
 }
@@ -10,7 +10,7 @@ void VkGroup::setId(int id)
     _id = id;
 }
 
-QString VkGroup::getName() const
+QString VkGroup::getName()
 {
     return _name;
 }

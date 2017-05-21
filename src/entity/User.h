@@ -1,19 +1,17 @@
 #ifndef ERUSER_H
 #define ERUSER_H
-#include "vk/VkUser.h"
-#include "vk/VkGroup.h"
+#include "entity/group.h"
+#include <QString>
 #include <QList>
 class User
 {
 private:
-    VkUser* vkUser;
-    QList<VkGroup*> vkGroup;
+    QList<Group*>* groups;
 public:
-    User();
-    VkUser* getVkUser() ;
-    void setVkUser(VkUser *value);
-    QList<VkGroup*> getVkGroup() const;
-    void setVkGroup(QList<VkGroup*> value);
+    virtual QString getFio(){return "";}
+    virtual int getId(){return 0;}
+    QList<Group*>* getGroups();
+    void setGroups(QList<Group*>* groups);
 };
 
 #endif // ERUSER_H
