@@ -24,17 +24,6 @@ Node *findNodeByEntity(QList<Node*> list, Entity<User*> *e){
 GraphWidget::GraphWidget(QWidget *parent, ER<User*>* er)
     : QGraphicsView(parent), timerId(0)
 {
-//    User* user = new VkUser(QObject::tr("Роман"), QObject::tr("Стецкевич"), 1);
-//    Entity<User*>* entity = new Entity<User*>();
-//    entity->setValue(new VkUser(QObject::tr("Роман"), QObject::tr("Стецкевич"), 1));
-//    User* user2 = new VkUser(QObject::tr("Андрей"), QObject::tr("Чуланов"), 1);
-//    Entity<User*>* entity2 = new Entity<User*>();
-//    entity2->setValue(new VkUser(QObject::tr("Андрей"), QObject::tr("Чуланов"), 1));
-//    this->node = new Node(entity);
-//    Node* nod = new Node(entity2);
-//    nod->setPos(-200, -200);
-//    node->setPos(0, 0);
-//    Edge* edge = new Edge(node, nod);
     this->er = er;
 
 

@@ -32,9 +32,11 @@ public:
     }
 
     void setNumCommonFriedns(int number){
+        horizontalNumberGroupBox->setVisible(true);
         this->numCommonFriends->setText(QString::number(number));
     }
     void setNumCommonGroups(int number){
+        horizontalNumberGroupBox->setVisible(true);
         this->numCommonGroups->setText(QString::number(number));
     }
 private slots:
@@ -43,6 +45,9 @@ private slots:
 private:
     void createMenu();
     void createHorizontalGroupBox();
+    void createHorizontalInformationGroupBox();
+    void createHorizontalNumberGroupBox();
+
     void createGridGroupBox();
     void createFormGroupBox();
 
@@ -58,6 +63,8 @@ private:
     QLabel* idLabel;
     QMenuBar *menuBar;
     QGroupBox *horizontalGroupBox;
+    QGroupBox *horizontalInforamtionGroupBox;
+    QGroupBox *horizontalNumberGroupBox;
     QGroupBox *gridGroupBox;
     QGroupBox *formGroupBox;
     QTextEdit *smallEditor;
@@ -75,5 +82,6 @@ private:
      QLabel* friendFio;
      QLabel* numCommonFriends;
      QLabel* numCommonGroups;
+     QLabel* information;
 };
 #endif

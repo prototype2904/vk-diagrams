@@ -11,18 +11,15 @@ QList<VkUser> generate(){
     }
    return users;
 }
+
 Dialog::Dialog()
 {
     userServiceFacade = new UserServiceFacade();
     idInput = new QLineEdit();
-    submitButton = new QPushButton(tr("Submit"));
-    connect(submitButton, SIGNAL(released()), this, SLOT(submit()));
-
-    socialGrpahButton = new QPushButton(tr("Нарисовать социальный граф"));
-    connect(socialGrpahButton, SIGNAL(released()), this, SLOT(createSocialGraph()));
-
     createMenu();
     createHorizontalGroupBox();
+    createHorizontalNumberGroupBox();
+    createHorizontalInformationGroupBox();
     createGridGroupBox();
 //    createFormGroupBox();
 
@@ -35,11 +32,11 @@ Dialog::Dialog()
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setMenuBar(menuBar);
     mainLayout->addWidget(horizontalGroupBox);
+    mainLayout->addWidget(horizontalNumberGroupBox);
+    mainLayout->addWidget(horizontalInforamtionGroupBox);
     mainLayout->addWidget(gridGroupBox);
 //    mainLayout->addWidget(formGroupBox);
     mainLayout->addWidget(buttonBox);
-
-
     setLayout(mainLayout);
 
     setWindowTitle(tr("Basic Layouts"));
@@ -62,43 +59,61 @@ void Dialog::createMenu()
 
 void Dialog::createHorizontalGroupBox()
 {
-    horizontalGroupBox = new QGroupBox(tr("Input id"));
+    submitButton = new QPushButton(tr("Подтвердить"), this);
+    horizontalGroupBox = new QGroupBox(tr("Введите id"));
+    connect(submitButton, SIGNAL(released()), this, SLOT(submit()));
+
+    socialGrpahButton = new QPushButton(tr("Нарисовать социальный граф"));
+    connect(socialGrpahButton, SIGNAL(released()), this, SLOT(createSocialGraph()));
+
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(idInput);
     layout->addWidget(submitButton);
     layout->addWidget(socialGrpahButton);
+
     horizontalGroupBox->setLayout(layout);
+    socialGrpahButton->setVisible(false);
 }
+
+void Dialog::createHorizontalInformationGroupBox()
+{
+    horizontalInforamtionGroupBox = new QGroupBox();
+    information = new QLabel(this);
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->addWidget(information);
+    this->information->setVisible(false);
+    horizontalInforamtionGroupBox->setLayout(layout);
+}
+
+void Dialog::createHorizontalNumberGroupBox()
+{
+    horizontalNumberGroupBox = new QGroupBox();
+    QHBoxLayout *layout = new QHBoxLayout;
+    QLabel *own_friends_label =  new QLabel(tr("Количество общих друзей:"));
+    QLabel *own_groups =  new QLabel(tr("Количество общих групп:"));
+    numCommonFriends = new QLabel(this);
+    numCommonGroups = new QLabel(this);
+    layout->addWidget(own_friends_label);
+    layout->addWidget(numCommonFriends);
+    layout->addWidget(own_groups);
+    layout->addWidget(numCommonGroups);
+    horizontalNumberGroupBox->setLayout(layout);
+    horizontalNumberGroupBox->setVisible(false);
+}
+
+
 
 void Dialog::createGridGroupBox()
 {
-    gridGroupBox = new QGroupBox(tr("Grid layout"));
-    QGridLayout *layout = new QGridLayout;
-
-    QLabel *fio_label =  new QLabel(tr("FIO:"));
-    QLabel *fio =  new QLabel(tr("Super fio"));
-    layout->addWidget(fio_label, 0, 0);
-    layout->addWidget(fio, 0, 1);
-
-//    GraphWidget *graphwidget = new GraphWidget(this);
-//    layout->addWidget(graphwidget, 0, 2, 4, 1);
-
-//    layout->setColumnStretch(1, 10);
-//    layout->setColumnStretch(2, 20);
-//    gridGroupBox->setLayout(layout);
+    gridGroupBox = new QGroupBox();
 }
 
 void Dialog::createFormGroupBox()
 {
-    formGroupBox = new QGroupBox(tr("Form layout"));
-    QFormLayout *layout = new QFormLayout;
-    layout->addRow(new QLabel(tr("Line 1:")), new QLineEdit);
-    layout->addRow(new QLabel(tr("Line 2, long text:")), new QComboBox);
-    layout->addRow(new QLabel(tr("Line 3:")), new QSpinBox);
-    formGroupBox->setLayout(layout);
 }
 
 void Dialog::submitVkUser(QString idUser, QGroupBox *grid){
+    this->information->setVisible(false);
     int i = 0;
 
     if(grid != NULL){
@@ -107,20 +122,30 @@ void Dialog::submitVkUser(QString idUser, QGroupBox *grid){
           delete grid->layout()->itemAt(0)->widget();
         }
         delete grid->layout();
+    }else{
+        grid = new QGroupBox();
     }
     QGridLayout *layout = new QGridLayout();
      layout->activate();
     ER<User*>* er = userServiceFacade->createER(idUser);
-    GraphWidget *graphwidget = new GraphWidget(this, er);
-    layout->addWidget(graphwidget, 0, 2, i, 1);
-    grid->setLayout(layout);
-    this->layout = layout;
-    diagram = er;
-    this->graphwidget = graphwidget;
+    if(er != NULL){
+        GraphWidget *graphwidget = new GraphWidget(this, er);
+        layout->addWidget(graphwidget, 0, 2, i, 1);
+        grid->setLayout(layout);
+        this->layout = layout;
+        diagram = er;
+        this->graphwidget = graphwidget;
+        this->socialGrpahButton->setVisible(true);
+        this->graphwidget->setSelectedNode(NULL);
+    }else{
+        this->information->setText("Неверно введен id пользователя.");
+        this->information->setVisible(true);
+    }
 }
 
 void Dialog::createSocialGraph(){
     delete this->layout;
+    this->socialGrpahButton->setVisible(false);
     QList<User*>* friends = userServiceFacade->getFriends( diagram->entityAt(0)->getValue());
     for(int i =0; i < friends->size(); i++){
         Entity<User*>* e = new Entity<User*>(friends->at(i));

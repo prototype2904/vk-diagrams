@@ -18,6 +18,8 @@ public:
     GraphWidget(QWidget *parent, ER<User*>* er);
     void itemMoved();
     Node* getNode();
+    Node* getSelectedNode(){return selectedNode;}
+    void setSelectedNode(Node *node){ this->selectedNode = node;}
     void drawRelation(Relation* r, bool focus);
     void drawEntity(Entity<User*>* e,QPainter *painter, bool focus, bool isAbstract);
 public slots:
@@ -40,6 +42,7 @@ private:
     int timerId;
     ER<User*>* er;
     Node* node;
+    Node* selectedNode;
 };
 
 #endif // GRAPHWIDGET_H

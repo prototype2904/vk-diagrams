@@ -165,6 +165,7 @@ void Node::drawEntity(QPainter *painter, bool focus, bool isAbstract){
     QColor color2(215,215,255,alpha);
     QColor colorRed(252,139,130,alpha);
     QColor colorGreen(125,220,125,alpha);
+    QColor colorBlue(125,125,220,alpha);
     QColor colorGreenAlpha(55,155,55,alpha0);
     QColor colorBlackAlpha(0,0,0,alpha1);
     QPen pen1 = QPen(Qt::black, 1, Qt::SolidLine);
@@ -173,8 +174,10 @@ void Node::drawEntity(QPainter *painter, bool focus, bool isAbstract){
     if(graph->getNode() == this){
      painter->setBrush(QBrush(colorGreen));
     }
-    else{
+    else if(graph->getSelectedNode() == this){
         painter->setBrush(QBrush(colorRed));
+    }else{
+        painter->setBrush(QBrush(colorBlue));
     }
 
 //    if(this->core->getState()==10 && this->core->getWeightOfSolution()!=-1){
@@ -390,18 +393,17 @@ void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     update();
-//    QGraphicsItem::mouseReleaseEvent(event);
-//    UserServiceFacade userServiceFacade;
-//    User* centerUser = getCenterNode()->getUser();
-//    User* selectUser = this->user;
-//    if(centerUser != selectUser){
-//        int ownFriends = userServiceFacade.getNumOwnFriends(centerUser, selectUser);
-//        int ownGroups = userServiceFacade.getNumOwnGroups(centerUser, selectUser);
-//        Dialog &dialog = DialogSingleton::get();
-//        dialog.setNumCommonFriedns(ownFriends);
-//        dialog.setNumCommonGroups(ownGroups);
-//        dialog.setFriendName(selectUser->getFio());
-//        update();
-//    }
+    UserServiceFacade userServiceFacade;
+    graph->setSelectedNode(NULL);
+    Node* node = graph->getNode();
+    Node* selectedNode = this;
+    if(node != selectedNode){
+        int ownFriends = userServiceFacade.getNumOwnFriends(node->getEntity()->getValue(), selectedNode->getEntity()->getValue());
+        int ownGroups = userServiceFacade.getNumOwnGroups(node->getEntity()->getValue(), selectedNode->getEntity()->getValue());
+        Dialog &dialog = DialogSingleton::get();
+        dialog.setNumCommonFriedns(ownFriends);
+        dialog.setNumCommonGroups(ownGroups);
+        graph->setSelectedNode(selectedNode);
+    }
 }
 

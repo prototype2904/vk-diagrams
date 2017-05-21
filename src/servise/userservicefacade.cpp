@@ -3,7 +3,7 @@
 
 UserServiceFacade::UserServiceFacade()
 {
-    QString access_token = "75314cff911e687ce2bfe8f8f79cafce6221be8b65464ab7261f3e77ca3f0e7b3cfb3ea6b823c6feb6e53";
+    QString access_token = "57ac5d95c287c7935fbd1adbc06ac920994c0712ba7d73079043f21edea79c9397ee549f2e234d16bbc0f";
     userService = new VkServise(access_token);
 }
 
@@ -17,9 +17,15 @@ User* UserServiceFacade::getUser(QString id){
 }
 
 ER<User*>* UserServiceFacade::createER(QString id){
-    ER<User*>* er = new ER<User*>();
-    er->addEntity(new Entity<User*>(getUser(id)));
-    return er;
+    User* user = getUser(id);
+    if(user != NULL){
+        ER<User*>* er = new ER<User*>();
+        er->addEntity(new Entity<User*>(user));
+        return er;
+    }
+    else{
+        return NULL;
+    }
 }
 
 int UserServiceFacade::getNumOwnGroups(User *center, User *select){
